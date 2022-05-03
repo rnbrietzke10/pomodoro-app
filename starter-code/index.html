@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/favicon-32x32.png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;700&family=Roboto+Slab:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./app.css" />
+    <title>Frontend Mentor | Pomodoro app</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>pomodoro</h1>
+        <div class="timer-select__container">
+          <div class="timer-select pom active">pomodoro</div>
+          <div class="timer-select short">short break</div>
+          <div class="timer-select long">long break</div>
+        </div>
+      </header>
+      <main>
+        <div class="circle__outer">
+          <!-- pause restart -->
+          <svg width="350" height="350" id="circle__container">
+            <circle
+              r="165"
+              cx="175"
+              cy="175"
+              id="circle__progress-bar"
+            ></circle>
+          </svg>
+          <div class="circle__inner">
+            <h2 class="timer">25:00</h2>
+          </div>
+          <button class="btn" id="start-stop-btn">start</button>
+        </div>
+      </main>
+      <footer>
+        <img
+          src="./assets/icon-settings.svg"
+          alt="Settings"
+          id="settings-icon"
+        />
+      </footer>
+
+      <div class="settings hidden">
+        <div class="settings__heading">
+          <h2>Settings</h2>
+          <img
+            src="./assets/icon-close.svg"
+            alt="Close Settings"
+            class="settings__close-icon"
+          />
+        </div>
+        <form action="">
+          <div class="settings__time">
+            <h2>Time (minutes)</h2>
+            <div class="settings__inputs">
+              <div class="input-container">
+                <label for="pomodoro">pomodoro</label>
+                <div class="interval-selector">
+                  <input
+                    min="0"
+                    max="90"
+                    type="number"
+                    name="pomodoro"
+                    id="pomodoro"
+                  />
+                  <div class="arrows">
+                    <img
+                      src="./assets/icon-arrow-up.svg"
+                      alt="up arrow"
+                      id="pom-increase"
+                      class="up"
+                    />
+                    <img
+                      src="./assets/icon-arrow-down.svg"
+                      alt="down arrow"
+                      id="pom-decrease"
+                      class="down"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="input-container">
+                <label for="short-break">short break</label>
+                <div class="interval-selector">
+                  <input
+                    type="number"
+                    name="short-break"
+                    id="short-break"
+                    min="0"
+                    max="90"
+                  />
+                  <div class="arrows">
+                    <img
+                      src="./assets/icon-arrow-up.svg"
+                      alt="up arrow"
+                      id="short-increase"
+                      class="up"
+                    />
+                    <img
+                      src="./assets/icon-arrow-down.svg"
+                      alt="down arrow"
+                      id="short-decrease"
+                      class="down"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="input-container">
+                <label for="long-break">long break</label>
+                <div class="interval-selector">
+                  <input
+                    type="number"
+                    name="long-break"
+                    id="long-break"
+                    min="0"
+                    max="90"
+                  />
+                  <div class="arrows">
+                    <img
+                      src="./assets/icon-arrow-up.svg"
+                      alt="up arrow"
+                      id="long-increase"
+                      class="up"
+                    />
+                    <img
+                      src="./assets/icon-arrow-down.svg"
+                      alt="down arrow"
+                      id="long-decrease"
+                      class="down"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="settings__choices font-choice-container">
+            <h2>Font</h2>
+            <div class="font choice-container">
+              <div class="choice-circle" id="kumbh">Aa</div>
+              <div class="choice-circle" id="roboto">Aa</div>
+              <div class="choice-circle" id="mono">Aa</div>
+            </div>
+          </div>
+          <div class="settings__choices">
+            <h2>Color</h2>
+            <div class="color choice-container">
+              <div class="choice-circle" id="coral"></div>
+              <div class="choice-circle" id="cyan"></div>
+              <div class="choice-circle" id="purple"></div>
+            </div>
+          </div>
+          <button type="submit" id="btn__apply">Apply</button>
+        </form>
+      </div>
+    </div>
+    <div id="overlay" class="hidden"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>

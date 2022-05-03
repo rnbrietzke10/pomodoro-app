@@ -1,0 +1,381 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Kumbh Sans;
+  font-weight: 700;
+  background-color: #1e213f;
+  color: #d7e0ff;
+  position: relative;
+}
+
+header {
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: -30px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 32px;
+}
+
+.timer-select__container {
+  background-color: #161932;
+  width: 373px;
+  height: 63px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 20px;
+  border-radius: 31px;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0px;
+  text-align: left;
+  position: relative;
+}
+.timer-select {
+  position: absolute;
+  padding: 16px 25px;
+}
+.pom {
+  left: 10px;
+}
+.short {
+  left: 130px;
+}
+.long {
+  right: 10px;
+}
+
+.active {
+  background-color: #f87070;
+  color: #1e213f;
+  border-radius: 30px;
+}
+
+/*************************************************************** 
+* Timer 
+*
+************************************************************** */
+
+main {
+  margin-top: 5px;
+  position: relative;
+  width: 100%;
+  height: 70%;
+}
+
+.circle__outer {
+  position: absolute;
+  height: 410px;
+  width: 410px;
+  background: linear-gradient(315deg, #2e325a 0%, #0e112a 100%);
+  box-shadow: -50px -50px 100px #272c5a, 50px 50px 100px #121530;
+  top: 50%; /* position the top  edge of the element at the middle of the parent */
+  left: 50%; /* position the left edge of the element at the middle of the parent */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* This is a shorthand of translateX(-50%) and translateY(-50%) */
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.circle__inner {
+  position: absolute;
+  height: 365px;
+  width: 365px;
+  background: #161932;
+  top: 50%; /* position the top  edge of the element at the middle of the parent */
+  left: 50%; /* position the left edge of the element at the middle of the parent */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* This is a shorthand of translateX(-50%) and translateY(-50%) */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 0;
+}
+
+#circle__container {
+  position: absolute;
+  top: 50%; /* position the top  edge of the element at the middle of the parent */
+  left: 50%; /* position the left edge of the element at the middle of the parent */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* This is a shorthand of translateX(-50%) and translateY(-50%) */
+  border-radius: 50%;
+  z-index: 3;
+}
+
+#circle__progress-bar {
+  stroke: #f87070;
+  stroke-width: 10;
+  fill: none;
+  z-index: 3;
+  /* ADDED IN JS
+  *
+  stroke-dasharray: 630;
+  /* if the stroke-dashoffset is 0 then the progress will be zero @ 3:00 from video below
+  https://youtu.be/f7XUZFexSgo
+  
+  stroke-dashoffset: 0; */
+
+  /*
+  If you want the progress bar to start at the top rotate it 270 deg or minus 90 degrees and set the transform origin to center
+  */
+  transform: rotate(-90deg);
+  transform-origin: center;
+  stroke-linecap: round;
+}
+
+.timer {
+  font-size: 100px;
+  line-height: 124px;
+  text-align: center;
+  letter-spacing: -5px;
+  margin-top: 5px;
+}
+.btn {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 15px;
+  color: #d7e0ff;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+  z-index: 4;
+  position: absolute;
+  bottom: 115px;
+  left: 150px;
+}
+
+/*************************************************************** 
+* Setting Modal 
+*
+************************************************************** */
+.settings {
+  height: 464px;
+  width: 540px;
+  color: #121530;
+  position: absolute;
+  background-color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  z-index: 99;
+}
+.settings__heading {
+  border-bottom: 1px solid #e3e1e1;
+  padding-left: 35px;
+  margin-top: 35px;
+  height: 20%;
+  position: relative;
+  font-size: 24px;
+}
+.settings__close-icon {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  cursor: pointer;
+}
+
+form {
+  height: 90%;
+  margin: 10px 30px;
+}
+.settings__time {
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.settings__inputs {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e3e1e1;
+  padding-bottom: 15px;
+}
+.input-container {
+  display: flex;
+  width: 140px;
+  flex-direction: column;
+  font-size: 12px;
+  color: #a5a6b2;
+  position: relative;
+}
+form h2 {
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #161932;
+}
+input[type='number'] {
+  width: 100%;
+  /* font-family: Kumbh Sans; */
+  background-color: #eff1fa;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+input:focus {
+  outline: none;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.arrows {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  margin-right: 10px;
+  position: absolute;
+  height: 20px;
+  right: 10px;
+  top: 30px;
+}
+/* #pom-up {
+  margin-bottom: 10px;
+} */
+
+.interval-selector {
+  border: none;
+  border-radius: 10px;
+  /* padding: 10px 0;
+  background-color: #eff1fa; */
+  width: 140px;
+  /* margin-right: 25px; */
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5px;
+}
+
+.settings__choices {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+}
+
+.choice-container {
+  width: 200px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.choice-circle {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #e3e1e1;
+}
+
+#kumbh {
+  font-family: 'Kumbh Sans';
+}
+
+#roboto {
+  font-family: 'Roboto Slab';
+}
+
+#mono {
+  font-family: 'Space Mono';
+}
+
+.font-selected {
+  background-color: #161932;
+  color: #fff;
+}
+
+.font-choice-container {
+  border-bottom: 1px solid #e3e1e1;
+}
+#coral {
+  background-color: #f87070;
+}
+
+#cyan {
+  background-color: #70f3f8;
+}
+
+#purple {
+  background-color: #d881f8;
+}
+
+.color-selected {
+  background-image: url('./assets/icons8-check-icon.svg');
+  background-position: center;
+  background-size: 25px;
+  background-repeat: no-repeat;
+}
+
+#btn__apply {
+  position: absolute;
+  /* font-family: 'Kumbh Sans'; */
+  font-weight: 700;
+  font-size: 16px;
+  width: 140px;
+  height: 53px;
+  color: #fff;
+  border: none;
+  background-color: #f87070;
+  border-radius: 30px;
+  bottom: -25px;
+  left: 200px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 12, 28, 0.6);
+  z-index: 98;
+}
+
+#settings-icon {
+  cursor: pointer;
+}
