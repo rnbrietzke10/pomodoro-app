@@ -145,6 +145,7 @@ main {
   transform: rotate(-90deg);
   transform-origin: center;
   stroke-linecap: round;
+  transition: all 2s;
 }
 
 .timer {
@@ -168,6 +169,10 @@ main {
   position: absolute;
   bottom: 115px;
   left: 150px;
+}
+
+.restart {
+  left: 125px;
 }
 
 /*************************************************************** 

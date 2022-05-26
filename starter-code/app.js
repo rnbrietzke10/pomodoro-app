@@ -1,5 +1,5 @@
 const progressCircle = document.getElementById('circle__progress-bar');
-const startStopBtn = document.getElementById('start-stop-btn');
+const startStopBtn = document.querySelector('.start-stop-btn');
 const currTime = document.querySelector('.timer');
 const settingsModal = document.querySelector('.settings');
 const overlay = document.querySelector('#overlay');
@@ -17,12 +17,21 @@ let userSettings = JSON.parse(localStorage.getItem('settings'));
 
 if (userSettings === null) {
   userSettings = {
-    pomTime: 1,
+    pomTime: 25,
     shortBreak: 5,
     longBreak: 30,
     fontFamily: 'Kumbh Sans',
     fontId: 'kumbh',
     color: 'coral',
+    pomodoroCompleted: [
+      {
+        count: 0,
+        date: '',
+      },
+    ],
+    pauseTime: 0,
+    setIntervalVal: 0,
+    countSession: 1,
   };
 }
 setSettings(userSettings);
@@ -44,10 +53,39 @@ const setProgress = function (precent, timer) {
     circumference - (precent / 100) * circumference;
 };
 
-startStopBtn.addEventListener('click', function () {
-  console.log(userSettings.pomTime);
-  console.log(currTime);
-  startTimer(userSettings.pomTime, currTime);
+/**
+ * Start, Pause and Restart event listner
+ *
+ */
+startStopBtn.addEventListener('click', function (e) {
+  console.log(e);
+  if (startStopBtn.innerText === 'PAUSE') {
+    clearInterval(userSettings['setIntervalVal']);
+    userSettings.pauseTime =
+      parseFloat(currTime.innerText.substring(0, 2), 10) +
+      parseFloat(currTime.innerText.substring(3), 10) / 60;
+    startStopBtn.innerText = 'RESTART';
+    startStopBtn.classList.add('restart');
+  } else if (startStopBtn.innerText === 'RESTART') {
+    startTimer(parseFloat(userSettings.pauseTime, 10), currTime);
+    startStopBtn.classList.remove('restart');
+    startStopBtn.innerText = 'Pause';
+  } else if (startStopBtn.innerText === 'START') {
+    if (parseInt(currTime.innerText) === userSettings.pomTime) {
+      document.querySelector('.pom').classList.add('active');
+      document.querySelector('.short').classList.remove('active');
+      startTimer(userSettings.pomTime, currTime);
+    } else if (parseInt(currTime.innerText) === userSettings.shortBreak) {
+      document.querySelector('.pom').classList.remove('active');
+      document.querySelector('.short').classList.add('active');
+      startTimer(userSettings.shortBreak, currTime);
+    } else if (parseInt(currTime.innerText) === userSettings.longBreak) {
+      document.querySelector('.short').classList.remove('active');
+      document.querySelector('.long').classList.add('active');
+      startTimer(userSettings.longBreak, currTime);
+    }
+    startStopBtn.innerText = 'Pause';
+  }
 });
 
 // Event listener to open settings modal
@@ -174,27 +212,41 @@ function applySettingStyles({ fontFamily, color }) {
 function startTimer(duration, display) {
   let timer = duration * 60;
   let minutes = duration;
-  let ratio = (minutes / timer) * 100;
+  let ratio = Math.round((minutes / timer) * 100) / 100;
+  console.log('Ratio' + ratio);
   let percent = 100;
-  let seconds = 0;
+  let seconds;
 
-  setInterval(function () {
-    percent -= ratio;
-    setProgress(percent);
-    minutes = parseInt(timer / 60, 10);
-    seconds = parseInt(timer % 60, 10);
+  userSettings['setIntervalVal'] = setInterval(
+    (function countdown() {
+      percent -= ratio * 4;
+      setProgress(percent);
+      minutes = parseInt(timer / 60, 10);
+      console.log('minutes: ' + minutes);
+      seconds = parseInt(timer % 60, 10);
+      console.log('seconds: ' + seconds);
 
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      seconds = seconds < 10 ? '0' + seconds : seconds;
 
-    display.textContent = minutes + ':' + seconds;
+      display.textContent = minutes + ':' + seconds;
 
-    // --timer decrements timer until it is less than 0
-    if (--timer < 0) {
-      clearInterval();
-      timer = 0;
-      progressCircle.style.strokeDashoffset = 0;
-      // timer = duration; // uncomment this line to reset timer automatically after reaching 0
-    }
-  }, 1000);
+      // --timer decrements timer until it is less than 0
+      if (--timer < 0) {
+        timer = 0;
+        progressCircle.style.strokeDashoffset = 0;
+        startStopBtn.innerText = 'Start';
+        if (userSettings.countSession % 2 !== 0) {
+          currTime.innerText = userSettings.shortBreak + ':00';
+        } else if (userSettings.countSession === 7) {
+          currTime.innerText = userSettings.shortBreak + ':00';
+        }
+        clearInterval(userSettings.setIntervalVal);
+      }
+      return countdown;
+    })(),
+    1000
+  );
 }
+
+function addRemoveActiveClass(timerType) {}
