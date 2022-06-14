@@ -20,6 +20,7 @@ if (userSettings === null) {
     pomTime: 25,
     shortBreak: 5,
     longBreak: 30,
+    currSession: 25,
     fontFamily: 'Kumbh Sans',
     fontId: 'kumbh',
     color: 'coral',
@@ -30,17 +31,20 @@ if (userSettings === null) {
       },
     ],
     pauseTime: 0,
+    // setIntervalVal used to clear timer interval
     setIntervalVal: 0,
     countSession: 1,
   };
+  localStorage.setItem('settings', JSON.stringify(userSettings));
 }
 setSettings(userSettings);
 applySettingStyles(userSettings);
 // Get radius from progress circle
 let radius = progressCircle.r.baseVal.value;
 // Calculate the circumference = 2πr
-let circumference = 2 * Math.PI * radius;
+let circumference = Math.round(2 * Math.PI * radius);
 progressCircle.style.strokeDasharray = circumference;
+
 /**
  *  The radius will give us the precise length of the circles border or stroke and assign it
  * to the stroke-dasharray of the circle and take out the dash-array and offset from the id
@@ -48,9 +52,9 @@ progressCircle.style.strokeDasharray = circumference;
  */
 
 // Set progress on scale between 0 and 100
-const setProgress = function (precent, timer) {
+const setProgress = function (percent) {
   progressCircle.style.strokeDashoffset =
-    circumference - (precent / 100) * circumference;
+    circumference - percent * circumference;
 };
 
 /**
@@ -209,22 +213,29 @@ function applySettingStyles({ fontFamily, color }) {
   document.querySelector('.active').style.backgroundColor = color;
 }
 
-function startTimer(duration, display) {
-  let timer = duration * 60;
-  let minutes = duration;
-  let ratio = Math.round((minutes / timer) * 100) / 100;
-  console.log('Ratio' + ratio);
-  let percent = 100;
-  let seconds;
+function calcPercent(timeRemainingSeconds) {
+  /**
+   * Turn time remaining in to seconds
+   * See what percentage of the total time
+   * Use that percentage to determine the percentage of the progress circle should be remaining
+   */
+  const totalTime = userSettings.currSession * 60;
+  const percentRemaining = timeRemainingSeconds / totalTime;
+  return percentRemaining;
+}
 
+function startTimer(duration, display) {
+  // Set up initial precentage based on duration (Pomtimer, break, or long break)
+  let percentTimeRemaining = calcPercent(duration * 60);
+  // ⬇️ Need to figure out how to make this dynamic for all time intervals ⬇️
+  let timeRemainingSeconds = 1500 * percentTimeRemaining;
+  // Set Interval
   userSettings['setIntervalVal'] = setInterval(
     (function countdown() {
-      percent -= ratio * 4;
-      setProgress(percent);
-      minutes = parseInt(timer / 60, 10);
-      console.log('minutes: ' + minutes);
-      seconds = parseInt(timer % 60, 10);
-      console.log('seconds: ' + seconds);
+      setProgress(percentTimeRemaining);
+      // Set time Remaining in minutes
+      minutes = parseInt(timeRemainingSeconds / 60, 10);
+      seconds = parseInt(timeRemainingSeconds % 60, 10);
 
       minutes = minutes < 10 ? '0' + minutes : minutes;
       seconds = seconds < 10 ? '0' + seconds : seconds;
@@ -232,21 +243,63 @@ function startTimer(duration, display) {
       display.textContent = minutes + ':' + seconds;
 
       // --timer decrements timer until it is less than 0
-      if (--timer < 0) {
-        timer = 0;
+      if (--timeRemainingSeconds < 0) {
+        timeRemainingSeconds = 0;
         progressCircle.style.strokeDashoffset = 0;
         startStopBtn.innerText = 'Start';
         if (userSettings.countSession % 2 !== 0) {
           currTime.innerText = userSettings.shortBreak + ':00';
         } else if (userSettings.countSession === 7) {
-          currTime.innerText = userSettings.shortBreak + ':00';
+          currTime.innerText = userSettings.longBreak + ':00';
         }
         clearInterval(userSettings.setIntervalVal);
       }
+      percentTimeRemaining = calcPercent(timeRemainingSeconds);
       return countdown;
     })(),
     1000
   );
 }
+
+// function startTimer(duration, display) {
+//   let timer = duration * 60;
+//   let minutes = duration;
+//   // circumference * (1 - percentage/100)
+//   let ratio = Math.round((minutes / timer) * 100) / 100;
+//   console.log('Ratio' + ratio);
+//   let percent = 100;
+//   let seconds;
+
+//   userSettings['setIntervalVal'] = setInterval(
+//     (function countdown() {
+//       percent -= ratio * 4;
+//       setProgress(percent);
+//       minutes = parseInt(timer / 60, 10);
+//       console.log('minutes: ' + minutes);
+//       seconds = parseInt(timer % 60, 10);
+//       console.log('seconds: ' + seconds);
+
+//       minutes = minutes < 10 ? '0' + minutes : minutes;
+//       seconds = seconds < 10 ? '0' + seconds : seconds;
+
+//       display.textContent = minutes + ':' + seconds;
+
+//       // --timer decrements timer until it is less than 0
+//       if (--timer < 0) {
+//         timer = 0;
+//         progressCircle.style.strokeDashoffset = 0;
+//         startStopBtn.innerText = 'Start';
+//         if (userSettings.countSession % 2 !== 0) {
+//           currTime.innerText = userSettings.shortBreak + ':00';
+//         } else if (userSettings.countSession === 7) {
+//           currTime.innerText = userSettings.shortBreak + ':00';
+//         }
+//         clearInterval(userSettings.setIntervalVal);
+//       }
+//       return countdown;
+//     })(),
+//     1000
+//   );
+// }
 
 function addRemoveActiveClass(timerType) {}
