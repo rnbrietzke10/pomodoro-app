@@ -33,7 +33,7 @@ if (userSettings === null) {
     pomodoroCompleted: [
       {
         count: 0,
-        date: '',
+        date: [],
       },
     ],
     pauseTime: 0,
@@ -43,6 +43,7 @@ if (userSettings === null) {
   };
   localStorage.setItem('settings', JSON.stringify(userSettings));
 }
+userSettings.currSession = userSettings.pomTime;
 setSettings(userSettings);
 applySettingStyles(userSettings);
 
@@ -149,6 +150,10 @@ function setSettings() {
   pomTimeInput.value = userSettings['pomTime'];
   shortTimeInput.value = userSettings['shortBreak'];
   longTimeInput.value = userSettings['longBreak'];
+  currTime.textContent =
+    userSettings.currSession < 10
+      ? '0' + userSettings.currSession + ':00'
+      : userSettings.currSession + ':00';
   document
     .getElementById(`${userSettings['fontId']}`)
     .classList.add('font-selected');
@@ -251,7 +256,8 @@ function startTimer(duration, display) {
   // Set up initial precentage based on duration (Pomtimer, break, or long break)
   let percentTimeRemaining = calcPercent(duration * 60);
   // ⬇️ Need to figure out how to make this dynamic for all time intervals ⬇️
-  let timeRemainingSeconds = 1500 * percentTimeRemaining;
+  let timeRemainingSeconds =
+    userSettings.currSession * 60 * percentTimeRemaining;
   // Set Interval
   userSettings['setIntervalVal'] = setInterval(
     (function countdown() {
@@ -264,18 +270,41 @@ function startTimer(duration, display) {
       seconds = seconds < 10 ? '0' + seconds : seconds;
 
       display.textContent = minutes + ':' + seconds;
-
+      currentDate = new Date();
       // --timer decrements timer until it is less than 0
       if (--timeRemainingSeconds < 0) {
         timeRemainingSeconds = 0;
         progressCircle.style.strokeDashoffset = 0;
         startStopBtn.innerText = 'Start';
         if (userSettings.countSession % 2 !== 0) {
-          currTime.innerText = userSettings.shortBreak + ':00';
+          userSettings.countSession++;
+          currTime.innerText =
+            userSettings.shortBreak < 10
+              ? '0' + userSettings.shortBreak + ':00'
+              : userSettings.shortBreak + ':00';
+          userSettings.currSession = userSettings.shortBreak;
         } else if (userSettings.countSession === 7) {
-          currTime.innerText = userSettings.longBreak + ':00';
+          userSettings.countSession = 1;
+          userSettings['pomodoroCompleted'].count += 1;
+          userSettings['pomodoroCompleted'].date.append([
+            currentDate,
+            currTime.getTime(),
+          ]);
+          currTime.innerText =
+            userSettings.longBreak < 10
+              ? '0' + userSettings.longBreak + ':00'
+              : userSettings.longBreak + ':00';
+          userSettings.currSession = userSettings.longBreak;
+        } else if (userSettings.countSession % 2 === 0) {
+          userSettings.countSession++;
+          currTime.innerText =
+            userSettings.pomTime < 10
+              ? '0' + userSettings.pomTime + ':00'
+              : userSettings.pomTime + ':00';
+          userSettings.currSession = userSettings.pomTime;
         }
         clearInterval(userSettings.setIntervalVal);
+        localStorage.setItem('settings', JSON.stringify(userSettings));
       }
       percentTimeRemaining = calcPercent(timeRemainingSeconds);
       return countdown;
