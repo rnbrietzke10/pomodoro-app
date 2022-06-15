@@ -2,6 +2,7 @@ const progressCircle = document.getElementById('circle__progress-bar');
 const startStopBtn = document.querySelector('.start-stop-btn');
 const currTime = document.querySelector('.timer');
 const settingsModal = document.querySelector('.settings');
+const applySettingsBtn = document.getElementById('btn__apply');
 const overlay = document.querySelector('#overlay');
 const pomTimeInput = document.querySelector('#pomodoro');
 const shortTimeInput = document.querySelector('#short-break');
@@ -15,6 +16,10 @@ const mono = document.querySelector('#mono');
 
 let userSettings = JSON.parse(localStorage.getItem('settings'));
 
+const hexCoral = '#f87070';
+const hexPurple = '#D881F8';
+const hexCyan = '#70f3f8';
+
 if (userSettings === null) {
   userSettings = {
     pomTime: 25,
@@ -24,6 +29,7 @@ if (userSettings === null) {
     fontFamily: 'Kumbh Sans',
     fontId: 'kumbh',
     color: 'coral',
+    hexColor: hexCoral,
     pomodoroCompleted: [
       {
         count: 0,
@@ -39,6 +45,7 @@ if (userSettings === null) {
 }
 setSettings(userSettings);
 applySettingStyles(userSettings);
+
 // Get radius from progress circle
 let radius = progressCircle.r.baseVal.value;
 // Calculate the circumference = 2πr
@@ -75,15 +82,19 @@ startStopBtn.addEventListener('click', function (e) {
     startStopBtn.classList.remove('restart');
     startStopBtn.innerText = 'Pause';
   } else if (startStopBtn.innerText === 'START') {
-    if (parseInt(currTime.innerText) === userSettings.pomTime) {
+    if (parseInt(currTime.innerText) === parseInt(userSettings.pomTime)) {
       document.querySelector('.pom').classList.add('active');
       document.querySelector('.short').classList.remove('active');
       startTimer(userSettings.pomTime, currTime);
-    } else if (parseInt(currTime.innerText) === userSettings.shortBreak) {
+    } else if (
+      parseInt(currTime.innerText) === parseInt(userSettings.shortBreak)
+    ) {
       document.querySelector('.pom').classList.remove('active');
       document.querySelector('.short').classList.add('active');
       startTimer(userSettings.shortBreak, currTime);
-    } else if (parseInt(currTime.innerText) === userSettings.longBreak) {
+    } else if (
+      parseInt(currTime.innerText) === parseInt(userSettings.longBreak)
+    ) {
       document.querySelector('.short').classList.remove('active');
       document.querySelector('.long').classList.add('active');
       startTimer(userSettings.longBreak, currTime);
@@ -108,12 +119,13 @@ document
 
 // Event listener for applying settings
 
-document.getElementById('btn__apply').addEventListener('click', function (e) {
+applySettingsBtn.addEventListener('click', function (e) {
   e.preventDefault();
   userSettings.pomTime = pomTimeInput.value;
   userSettings.shortBreak = shortTimeInput.value;
   userSettings.longBreak = longTimeInput.value;
   userSettings.color = checkColorSelected().attributes.id.value;
+  userSettings.hexColor = setHexColor(checkColorSelected());
   checkFontSelected();
   localStorage.setItem('settings', JSON.stringify(userSettings));
   applySettingStyles(userSettings);
@@ -121,6 +133,17 @@ document.getElementById('btn__apply').addEventListener('click', function (e) {
   settingsModal.classList.add('hidden');
   overlay.classList.add('hidden');
 });
+
+function setHexColor(colorSelected) {
+  console.log(colorSelected.attributes.id.value);
+  if (colorSelected.attributes.id.value === 'coral') {
+    return hexCoral;
+  } else if (colorSelected.attributes.id.value === 'cyan') {
+    return hexCyan;
+  } else {
+    return hexPurple;
+  }
+}
 
 function setSettings() {
   pomTimeInput.value = userSettings['pomTime'];
@@ -207,10 +230,10 @@ document
     }
   });
 
-function applySettingStyles({ fontFamily, color }) {
+function applySettingStyles({ fontFamily, hexColor }) {
   document.querySelector('.wrapper').style.fontFamily = fontFamily;
-  progressCircle.style.stroke = color;
-  document.querySelector('.active').style.backgroundColor = color;
+  progressCircle.style.stroke = hexColor;
+  document.querySelector('.active').style.backgroundColor = hexColor;
 }
 
 function calcPercent(timeRemainingSeconds) {
@@ -260,46 +283,5 @@ function startTimer(duration, display) {
     1000
   );
 }
-
-// function startTimer(duration, display) {
-//   let timer = duration * 60;
-//   let minutes = duration;
-//   // circumference * (1 - percentage/100)
-//   let ratio = Math.round((minutes / timer) * 100) / 100;
-//   console.log('Ratio' + ratio);
-//   let percent = 100;
-//   let seconds;
-
-//   userSettings['setIntervalVal'] = setInterval(
-//     (function countdown() {
-//       percent -= ratio * 4;
-//       setProgress(percent);
-//       minutes = parseInt(timer / 60, 10);
-//       console.log('minutes: ' + minutes);
-//       seconds = parseInt(timer % 60, 10);
-//       console.log('seconds: ' + seconds);
-
-//       minutes = minutes < 10 ? '0' + minutes : minutes;
-//       seconds = seconds < 10 ? '0' + seconds : seconds;
-
-//       display.textContent = minutes + ':' + seconds;
-
-//       // --timer decrements timer until it is less than 0
-//       if (--timer < 0) {
-//         timer = 0;
-//         progressCircle.style.strokeDashoffset = 0;
-//         startStopBtn.innerText = 'Start';
-//         if (userSettings.countSession % 2 !== 0) {
-//           currTime.innerText = userSettings.shortBreak + ':00';
-//         } else if (userSettings.countSession === 7) {
-//           currTime.innerText = userSettings.shortBreak + ':00';
-//         }
-//         clearInterval(userSettings.setIntervalVal);
-//       }
-//       return countdown;
-//     })(),
-//     1000
-//   );
-// }
 
 function addRemoveActiveClass(timerType) {}
