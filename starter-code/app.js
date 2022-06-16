@@ -1,12 +1,11 @@
+const headerPom = document.querySelector('.pom');
+const headerShort = document.querySelector('.short');
+const headerBreak = document.querySelector('.long');
+
 const progressCircle = document.getElementById('circle__progress-bar');
 const startStopBtn = document.querySelector('.start-stop-btn');
 const currTime = document.querySelector('.timer');
-const settingsModal = document.querySelector('.settings');
-const applySettingsBtn = document.getElementById('btn__apply');
-const overlay = document.querySelector('#overlay');
-const pomTimeInput = document.querySelector('#pomodoro');
-const shortTimeInput = document.querySelector('#short-break');
-const longTimeInput = document.querySelector('#long-break');
+
 const coral = document.querySelector('#coral');
 const cyan = document.querySelector('#cyan');
 const purple = document.querySelector('#purple');
@@ -60,10 +59,10 @@ progressCircle.style.strokeDasharray = circumference;
  */
 
 // Set progress on scale between 0 and 100
-const setProgress = function (percent) {
+function setProgress(percent) {
   progressCircle.style.strokeDashoffset =
     circumference - percent * circumference;
-};
+}
 
 /**
  * Start, Pause and Restart event listner
@@ -84,162 +83,33 @@ startStopBtn.addEventListener('click', function (e) {
     startStopBtn.innerText = 'Pause';
   } else if (startStopBtn.innerText === 'START') {
     if (parseInt(currTime.innerText) === parseInt(userSettings.pomTime)) {
-      document.querySelector('.pom').classList.add('active');
-      document.querySelector('.short').classList.remove('active');
+      headerPom.classList.add('active');
+      headerShort.classList.remove('active');
+      if (!headerPom.classList.contains(`${userSettings.color}-color`)) {
+        headerPom.classList.toggle(`${userSettings.color}-color`);
+        headerShort.classList.toggle(`${userSettings.color}-color`);
+      }
       startTimer(userSettings.pomTime, currTime);
     } else if (
       parseInt(currTime.innerText) === parseInt(userSettings.shortBreak)
     ) {
-      document.querySelector('.pom').classList.remove('active');
-      document.querySelector('.short').classList.add('active');
+      headerPom.classList.remove('active');
+      headerShort.classList.add('active');
+      headerPom.classList.toggle(`${userSettings.color}-color`);
+      document
+        .querySelector('.short')
+        .classList.toggle(`${userSettings.color}-color`);
       startTimer(userSettings.shortBreak, currTime);
     } else if (
       parseInt(currTime.innerText) === parseInt(userSettings.longBreak)
     ) {
-      document.querySelector('.short').classList.remove('active');
-      document.querySelector('.long').classList.add('active');
+      headerShort.classList.remove('active');
+      headerLong.classList.add('active');
       startTimer(userSettings.longBreak, currTime);
     }
     startStopBtn.innerText = 'Pause';
   }
 });
-
-// Event listener to open settings modal
-document.querySelector('#settings-icon').addEventListener('click', function () {
-  settingsModal.classList.remove('hidden');
-  overlay.classList.remove('hidden');
-});
-
-// Event lisnter to close settings modal using the x at the top right corner
-document
-  .querySelector('.settings__close-icon')
-  .addEventListener('click', function () {
-    settingsModal.classList.add('hidden');
-    overlay.classList.add('hidden');
-  });
-
-// Event listener for applying settings
-
-applySettingsBtn.addEventListener('click', function (e) {
-  e.preventDefault();
-  userSettings.pomTime = pomTimeInput.value;
-  userSettings.shortBreak = shortTimeInput.value;
-  userSettings.longBreak = longTimeInput.value;
-  userSettings.color = checkColorSelected().attributes.id.value;
-  userSettings.hexColor = setHexColor(checkColorSelected());
-  checkFontSelected();
-  localStorage.setItem('settings', JSON.stringify(userSettings));
-  applySettingStyles(userSettings);
-  console.log(userSettings);
-  settingsModal.classList.add('hidden');
-  overlay.classList.add('hidden');
-});
-
-function setHexColor(colorSelected) {
-  console.log(colorSelected.attributes.id.value);
-  if (colorSelected.attributes.id.value === 'coral') {
-    return hexCoral;
-  } else if (colorSelected.attributes.id.value === 'cyan') {
-    return hexCyan;
-  } else {
-    return hexPurple;
-  }
-}
-
-function setSettings() {
-  pomTimeInput.value = userSettings['pomTime'];
-  shortTimeInput.value = userSettings['shortBreak'];
-  longTimeInput.value = userSettings['longBreak'];
-  currTime.textContent =
-    userSettings.currSession < 10
-      ? '0' + userSettings.currSession + ':00'
-      : userSettings.currSession + ':00';
-  document
-    .getElementById(`${userSettings['fontId']}`)
-    .classList.add('font-selected');
-  document
-    .getElementById(`${userSettings['color']}`)
-    .classList.add('color-selected');
-}
-
-function checkColorSelected() {
-  if (coral.classList.contains('color-selected')) {
-    return coral;
-  } else if (cyan.classList.contains('color-selected')) {
-    return cyan;
-  } else {
-    return purple;
-  }
-}
-
-function checkFontSelected() {
-  if (kumbh.classList.contains('font-selected')) {
-    userSettings.fontFamily = 'Kumbh Sans';
-    userSettings.fontId = 'kumbh';
-    return kumbh;
-  } else if (roboto.classList.contains('font-selected')) {
-    userSettings.fontFamily = 'Roboto Slab';
-    userSettings.fontId = 'roboto';
-    return roboto;
-  } else {
-    userSettings.fontFamily = 'Space Mono';
-    userSettings.fontId = 'mono';
-    return mono;
-  }
-}
-
-// Event listener for font selection
-document.querySelector('.font').addEventListener('click', function (e) {
-  console.log(e.target.attributes.id.value);
-  const currFont = checkFontSelected();
-  console.log(currFont);
-  currFont.classList.remove('font-selected');
-  document
-    .querySelector(`#${e.target.attributes.id.value}`)
-    .classList.add('font-selected');
-});
-
-// Event listner to listen for what color is clicked
-document.querySelector('.color').addEventListener('click', function (e) {
-  const currColor = checkColorSelected();
-  currColor.classList.remove('color-selected');
-  document
-    .querySelector(`#${e.target.attributes.id.value}`)
-    .classList.add('color-selected');
-});
-
-// Change time value with arrow on number input
-document
-  .querySelector('.settings__time')
-  .addEventListener('click', function (e) {
-    const value = e.target.attributes.id.value;
-    switch (value) {
-      case 'pom-increase':
-        pomTimeInput.value = parseInt(pomTimeInput.value) + 1;
-        break;
-      case 'short-increase':
-        shortTimeInput.value = parseInt(shortTimeInput.value) + 1;
-        break;
-      case 'long-increase':
-        longTimeInput.value = parseInt(longTimeInput.value) + 1;
-        break;
-      case 'pom-decrease':
-        pomTimeInput.value = parseInt(pomTimeInput.value) - 1;
-        break;
-      case 'short-decrease':
-        shortTimeInput.value = parseInt(shortTimeInput.value) - 1;
-        break;
-      case 'long-decrease':
-        longTimeInput.value = parseInt(longTimeInput.value) - 1;
-        break;
-    }
-  });
-
-function applySettingStyles({ fontFamily, hexColor }) {
-  document.querySelector('.wrapper').style.fontFamily = fontFamily;
-  progressCircle.style.stroke = hexColor;
-  document.querySelector('.active').style.backgroundColor = hexColor;
-}
 
 function calcPercent(timeRemainingSeconds) {
   /**
@@ -276,14 +146,7 @@ function startTimer(duration, display) {
         timeRemainingSeconds = 0;
         progressCircle.style.strokeDashoffset = 0;
         startStopBtn.innerText = 'Start';
-        if (userSettings.countSession % 2 !== 0) {
-          userSettings.countSession++;
-          currTime.innerText =
-            userSettings.shortBreak < 10
-              ? '0' + userSettings.shortBreak + ':00'
-              : userSettings.shortBreak + ':00';
-          userSettings.currSession = userSettings.shortBreak;
-        } else if (userSettings.countSession === 7) {
+        if (userSettings.countSession === 7) {
           userSettings.countSession = 1;
           userSettings['pomodoroCompleted'].count += 1;
           userSettings['pomodoroCompleted'].date.append([
@@ -295,6 +158,13 @@ function startTimer(duration, display) {
               ? '0' + userSettings.longBreak + ':00'
               : userSettings.longBreak + ':00';
           userSettings.currSession = userSettings.longBreak;
+        } else if (userSettings.countSession % 2 !== 0) {
+          userSettings.countSession++;
+          currTime.innerText =
+            userSettings.shortBreak < 10
+              ? '0' + userSettings.shortBreak + ':00'
+              : userSettings.shortBreak + ':00';
+          userSettings.currSession = userSettings.shortBreak;
         } else if (userSettings.countSession % 2 === 0) {
           userSettings.countSession++;
           currTime.innerText =

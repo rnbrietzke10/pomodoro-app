@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: Kumbh Sans;
+  /* font-family: Kumbh Sans; */
   font-weight: 700;
   background-color: #1e213f;
   color: #d7e0ff;
@@ -64,7 +64,7 @@ h1 {
 }
 
 .active {
-  background-color: #f87070;
+  /* background-color: #f87070; */
   color: #1e213f;
   border-radius: 30px;
 }
@@ -129,7 +129,7 @@ main {
 }
 
 #circle__progress-bar {
-  stroke: #f87070;
+  /* stroke: #f87070; */
   stroke-width: 10;
   fill: none;
   z-index: 3;
