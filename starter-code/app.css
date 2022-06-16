@@ -50,14 +50,12 @@ h1 {
 .timer-select {
   position: absolute;
   padding: 16px 25px;
-  background-color: #1e213f;
-  color: #fff;
 }
 .pom {
   left: 10px;
 }
 .short {
-  left: 130px;
+  left: 125px;
 }
 .long {
   right: 10px;
@@ -67,6 +65,13 @@ h1 {
   /* background-color: #f87070; */
   color: #1e213f;
   border-radius: 30px;
+  z-index: 2;
+}
+
+.inactive {
+  background-color: #161932;
+  color: #d7e0ff;
+  /* transition: background-color 3000ms linear; */
 }
 
 /*************************************************************** 
@@ -133,6 +138,7 @@ main {
   stroke-width: 10;
   fill: none;
   z-index: 3;
+
   /* ADDED IN JS
   *
   stroke-dasharray: 630;

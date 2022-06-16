@@ -1,6 +1,6 @@
 const headerPom = document.querySelector('.pom');
 const headerShort = document.querySelector('.short');
-const headerBreak = document.querySelector('.long');
+const headerLong = document.querySelector('.long');
 
 const progressCircle = document.getElementById('circle__progress-bar');
 const startStopBtn = document.querySelector('.start-stop-btn');
@@ -29,12 +29,10 @@ if (userSettings === null) {
     fontId: 'kumbh',
     color: 'coral',
     hexColor: hexCoral,
-    pomodoroCompleted: [
-      {
-        count: 0,
-        date: [],
-      },
-    ],
+    pomodoroCompleted: {
+      count: 0,
+      date: [],
+    },
     pauseTime: 0,
     // setIntervalVal used to clear timer interval
     setIntervalVal: 0,
@@ -82,33 +80,9 @@ startStopBtn.addEventListener('click', function (e) {
     startStopBtn.classList.remove('restart');
     startStopBtn.innerText = 'Pause';
   } else if (startStopBtn.innerText === 'START') {
-    if (parseInt(currTime.innerText) === parseInt(userSettings.pomTime)) {
-      headerPom.classList.add('active');
-      headerShort.classList.remove('active');
-      if (!headerPom.classList.contains(`${userSettings.color}-color`)) {
-        headerPom.classList.toggle(`${userSettings.color}-color`);
-        headerShort.classList.toggle(`${userSettings.color}-color`);
-      }
-      startTimer(userSettings.pomTime, currTime);
-    } else if (
-      parseInt(currTime.innerText) === parseInt(userSettings.shortBreak)
-    ) {
-      headerPom.classList.remove('active');
-      headerShort.classList.add('active');
-      headerPom.classList.toggle(`${userSettings.color}-color`);
-      document
-        .querySelector('.short')
-        .classList.toggle(`${userSettings.color}-color`);
-      startTimer(userSettings.shortBreak, currTime);
-    } else if (
-      parseInt(currTime.innerText) === parseInt(userSettings.longBreak)
-    ) {
-      headerShort.classList.remove('active');
-      headerLong.classList.add('active');
-      startTimer(userSettings.longBreak, currTime);
-    }
-    startStopBtn.innerText = 'Pause';
+    startTimer(userSettings.currSession, currTime);
   }
+  startStopBtn.innerText = 'Pause';
 });
 
 function calcPercent(timeRemainingSeconds) {
@@ -141,37 +115,24 @@ function startTimer(duration, display) {
 
       display.textContent = minutes + ':' + seconds;
       currentDate = new Date();
+      // console.log(userSettings['pomodoroCompleted'][0].date);
       // --timer decrements timer until it is less than 0
       if (--timeRemainingSeconds < 0) {
         timeRemainingSeconds = 0;
         progressCircle.style.strokeDashoffset = 0;
         startStopBtn.innerText = 'Start';
         if (userSettings.countSession === 7) {
-          userSettings.countSession = 1;
+          userSettings.countSession = 0;
           userSettings['pomodoroCompleted'].count += 1;
-          userSettings['pomodoroCompleted'].date.append([
+          userSettings['pomodoroCompleted'].date = [
             currentDate,
-            currTime.getTime(),
-          ]);
-          currTime.innerText =
-            userSettings.longBreak < 10
-              ? '0' + userSettings.longBreak + ':00'
-              : userSettings.longBreak + ':00';
-          userSettings.currSession = userSettings.longBreak;
+            currentDate.getTime(),
+          ];
+          handleLongBreak();
         } else if (userSettings.countSession % 2 !== 0) {
-          userSettings.countSession++;
-          currTime.innerText =
-            userSettings.shortBreak < 10
-              ? '0' + userSettings.shortBreak + ':00'
-              : userSettings.shortBreak + ':00';
-          userSettings.currSession = userSettings.shortBreak;
+          handleShortBreak();
         } else if (userSettings.countSession % 2 === 0) {
-          userSettings.countSession++;
-          currTime.innerText =
-            userSettings.pomTime < 10
-              ? '0' + userSettings.pomTime + ':00'
-              : userSettings.pomTime + ':00';
-          userSettings.currSession = userSettings.pomTime;
+          handlePom();
         }
         clearInterval(userSettings.setIntervalVal);
         localStorage.setItem('settings', JSON.stringify(userSettings));
@@ -183,4 +144,58 @@ function startTimer(duration, display) {
   );
 }
 
-function addRemoveActiveClass(timerType) {}
+function handlePom() {
+  userSettings.countSession++;
+  currTime.innerText =
+    userSettings.pomTime < 10
+      ? '0' + userSettings.pomTime + ':00'
+      : userSettings.pomTime + ':00';
+  userSettings.currSession = userSettings.pomTime;
+
+  headerPom.classList.add(`active`);
+  headerPom.classList.add(`${userSettings.color}-color`);
+  headerPom.classList.remove(`inactive`);
+  headerShort.classList.remove(`active`);
+  headerShort.classList.remove(`${userSettings.color}-color`);
+  headerLong.classList.remove(`active`);
+  headerLong.classList.remove(`${userSettings.color}-color`);
+  !headerShort.classList.contains('inactive')
+    ? headerShort.classList.add('inactive')
+    : '';
+  !headerLong.classList.contains('inactive')
+    ? headerLong.classList.add('inactive')
+    : '';
+}
+
+function handleShortBreak() {
+  userSettings.countSession++;
+  currTime.innerText =
+    userSettings.shortBreak < 10
+      ? '0' + userSettings.shortBreak + ':00'
+      : userSettings.shortBreak + ':00';
+  userSettings.currSession = userSettings.shortBreak;
+
+  headerPom.classList.add('inactive');
+  headerShort.classList.remove('inactive');
+  headerPom.classList.remove(`active`);
+  headerPom.classList.remove(`${userSettings.color}-color`);
+  headerShort.classList.add(`active`);
+  headerShort.classList.add(`${userSettings.color}-color`);
+}
+
+function handleLongBreak() {
+  headerPom.classList.add('inactive');
+  headerLong.classList.remove('inactive');
+  headerPom.classList.remove(`active`);
+  headerPom.classList.remove(`${userSettings.color}-color`);
+  headerLong.classList.add(`active`);
+  headerLong.classList.add(`${userSettings.color}-color`);
+  headerShort.classList.remove(`active`);
+  headerShort.classList.remove(`${userSettings.color}-color`);
+
+  currTime.innerText =
+    userSettings.longBreak < 10
+      ? '0' + userSettings.longBreak + ':00'
+      : userSettings.longBreak + ':00';
+  userSettings.currSession = userSettings.longBreak;
+}
