@@ -143,5 +143,5 @@ document
 function applySettingStyles({ fontFamily, hexColor, color }) {
   document.querySelector('.wrapper').style.fontFamily = fontFamily;
   progressCircle.style.stroke = hexColor;
-  document.querySelector('.active').classList.add(`${color}-color`);
+  document.querySelector('.indicator').classList.add(`${color}-color`);
 }

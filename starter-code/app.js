@@ -1,6 +1,7 @@
-const headerPom = document.querySelector('.pom');
-const headerShort = document.querySelector('.short');
-const headerLong = document.querySelector('.long');
+const headerPom = document.querySelector('#pom');
+const headerShort = document.querySelector('#short-break-header');
+const headerLong = document.querySelector('#long-break-header');
+const headerIndicator = document.querySelector('.indicator');
 
 const progressCircle = document.getElementById('circle__progress-bar');
 const startStopBtn = document.querySelector('.start-stop-btn');
@@ -156,51 +157,104 @@ function setPomodoroTimer() {
 
 function handlePom() {
   setPomodoroTimer();
+  pomodoroIndicatorStyle();
   userSettings.countSession++;
-  headerPom.classList.add(`active`);
-  headerPom.classList.add(`${userSettings.color}-color`);
-  headerPom.classList.remove(`inactive`);
-  headerShort.classList.remove(`active`);
-  headerShort.classList.remove(`${userSettings.color}-color`);
-  headerLong.classList.remove(`active`);
-  headerLong.classList.remove(`${userSettings.color}-color`);
-  !headerShort.classList.contains('inactive')
-    ? headerShort.classList.add('inactive')
-    : '';
-  !headerLong.classList.contains('inactive')
-    ? headerLong.classList.add('inactive')
-    : '';
+  // headerPom.classList.add(`active`);
+  // headerPom.classList.add(`${userSettings.color}-color`);
+  // headerPom.classList.remove(`inactive`);
+  // headerShort.classList.remove(`active`);
+  // headerShort.classList.remove(`${userSettings.color}-color`);
+  // headerLong.classList.remove(`active`);
+  // headerLong.classList.remove(`${userSettings.color}-color`);
+  // !headerShort.classList.contains('inactive')
+  //   ? headerShort.classList.add('inactive')
+  //   : '';
+  // !headerLong.classList.contains('inactive')
+  //   ? headerLong.classList.add('inactive')
+  //   : '';
 }
 
 function handleShortBreak() {
   userSettings.countSession++;
+  setShortBreakTime();
+  shortBreakIndicatorStyle();
+}
+
+function handleLongBreak() {
+  longBreakIndicatorStyle();
+  // headerPom.classList.add('inactive');
+  // headerLong.classList.remove('inactive');
+  // headerPom.classList.remove(`active`);
+  // headerPom.classList.remove(`${userSettings.color}-color`);
+  // headerLong.classList.add(`active`);
+  // headerLong.classList.add(`${userSettings.color}-color`);
+  // headerShort.classList.remove(`active`);
+  // headerShort.classList.remove(`${userSettings.color}-color`);
+  setLongBreakTime();
+}
+
+function setShortBreakTime() {
   currTime.innerText =
     userSettings.shortBreak < 10
       ? '0' + userSettings.shortBreak + ':00'
       : userSettings.shortBreak + ':00';
   userSettings.currSession = userSettings.shortBreak;
-
-  headerPom.classList.add('inactive');
-  headerShort.classList.remove('inactive');
-  headerPom.classList.remove(`active`);
-  headerPom.classList.remove(`${userSettings.color}-color`);
-  headerShort.classList.add(`active`);
-  headerShort.classList.add(`${userSettings.color}-color`);
 }
 
-function handleLongBreak() {
-  headerPom.classList.add('inactive');
-  headerLong.classList.remove('inactive');
-  headerPom.classList.remove(`active`);
-  headerPom.classList.remove(`${userSettings.color}-color`);
-  headerLong.classList.add(`active`);
-  headerLong.classList.add(`${userSettings.color}-color`);
-  headerShort.classList.remove(`active`);
-  headerShort.classList.remove(`${userSettings.color}-color`);
-
+function setLongBreakTime() {
   currTime.innerText =
     userSettings.longBreak < 10
       ? '0' + userSettings.longBreak + ':00'
       : userSettings.longBreak + ':00';
   userSettings.currSession = userSettings.longBreak;
+}
+
+/**
+ * Move Timer indicator
+ */
+
+headerPom.addEventListener('click', function () {
+  pomodoroIndicatorStyle();
+  setPomodoroTimer();
+});
+
+headerShort.addEventListener('click', function () {
+  shortBreakIndicatorStyle();
+  setShortBreakTime();
+});
+
+headerLong.addEventListener('click', function () {
+  longBreakIndicatorStyle();
+  setLongBreakTime();
+});
+
+/**
+ * Change style of heading indicator for what session the user is in
+ */
+function pomodoroIndicatorStyle() {
+  headerIndicator.style.left = '2%';
+  // headerIndicator.style.backgroundColor = `${userSettings.color}-color`;
+  !headerPom.classList.contains('active-session')
+    ? headerPom.classList.add('active-session')
+    : '';
+  headerShort.classList.remove('active-session');
+  headerLong.classList.remove('active-session');
+}
+
+function shortBreakIndicatorStyle() {
+  document.querySelector('.indicator').style.left = 'calc((98%/3))';
+  !headerShort.classList.contains('active-session')
+    ? headerShort.classList.add('active-session')
+    : '';
+  headerPom.classList.remove('active-session');
+  headerLong.classList.remove('active-session');
+}
+
+function longBreakIndicatorStyle() {
+  document.querySelector('.indicator').style.left = 'calc(2*(98%/3))';
+  !headerLong.classList.contains('active-session')
+    ? headerLong.classList.add('active-session')
+    : '';
+  headerPom.classList.remove('active-session');
+  headerShort.classList.remove('active-session');
 }
