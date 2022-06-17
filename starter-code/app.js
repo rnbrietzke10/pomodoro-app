@@ -159,19 +159,6 @@ function handlePom() {
   setPomodoroTimer();
   pomodoroIndicatorStyle();
   userSettings.countSession++;
-  // headerPom.classList.add(`active`);
-  // headerPom.classList.add(`${userSettings.color}-color`);
-  // headerPom.classList.remove(`inactive`);
-  // headerShort.classList.remove(`active`);
-  // headerShort.classList.remove(`${userSettings.color}-color`);
-  // headerLong.classList.remove(`active`);
-  // headerLong.classList.remove(`${userSettings.color}-color`);
-  // !headerShort.classList.contains('inactive')
-  //   ? headerShort.classList.add('inactive')
-  //   : '';
-  // !headerLong.classList.contains('inactive')
-  //   ? headerLong.classList.add('inactive')
-  //   : '';
 }
 
 function handleShortBreak() {
@@ -182,14 +169,6 @@ function handleShortBreak() {
 
 function handleLongBreak() {
   longBreakIndicatorStyle();
-  // headerPom.classList.add('inactive');
-  // headerLong.classList.remove('inactive');
-  // headerPom.classList.remove(`active`);
-  // headerPom.classList.remove(`${userSettings.color}-color`);
-  // headerLong.classList.add(`active`);
-  // headerLong.classList.add(`${userSettings.color}-color`);
-  // headerShort.classList.remove(`active`);
-  // headerShort.classList.remove(`${userSettings.color}-color`);
   setLongBreakTime();
 }
 
