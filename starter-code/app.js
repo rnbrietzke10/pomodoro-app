@@ -67,23 +67,26 @@ function setProgress(percent) {
  *
  */
 startStopBtn.addEventListener('click', function (e) {
-  console.log(e);
-  if (startStopBtn.innerText === 'PAUSE') {
-    clearInterval(userSettings['setIntervalVal']);
-    userSettings.pauseTime =
-      parseFloat(currTime.innerText.substring(0, 2), 10) +
-      parseFloat(currTime.innerText.substring(3), 10) / 60;
-    startStopBtn.innerText = 'RESTART';
-    startStopBtn.classList.add('restart');
-  } else if (startStopBtn.innerText === 'RESTART') {
+  if (startStopBtn.innerText === 'RESTART') {
     startTimer(parseFloat(userSettings.pauseTime, 10), currTime);
     startStopBtn.classList.remove('restart');
-    startStopBtn.innerText = 'Pause';
+    startStopBtn.innerText = 'PAUSE';
+  } else if (startStopBtn.innerText === 'PAUSE') {
+    pauseTimer();
   } else if (startStopBtn.innerText === 'START') {
     startTimer(userSettings.currSession, currTime);
+    startStopBtn.innerText = 'PAUSE';
   }
-  startStopBtn.innerText = 'Pause';
 });
+
+function pauseTimer() {
+  clearInterval(userSettings['setIntervalVal']);
+  userSettings.pauseTime =
+    parseFloat(currTime.innerText.substring(0, 2), 10) +
+    parseFloat(currTime.innerText.substring(3), 10) / 60;
+  startStopBtn.innerText = 'RESTART';
+  startStopBtn.classList.add('restart');
+}
 
 function calcPercent(timeRemainingSeconds) {
   /**
@@ -115,7 +118,6 @@ function startTimer(duration, display) {
 
       display.textContent = minutes + ':' + seconds;
       currentDate = new Date();
-      // console.log(userSettings['pomodoroCompleted'][0].date);
       // --timer decrements timer until it is less than 0
       if (--timeRemainingSeconds < 0) {
         timeRemainingSeconds = 0;
@@ -144,14 +146,17 @@ function startTimer(duration, display) {
   );
 }
 
-function handlePom() {
-  userSettings.countSession++;
+function setPomodoroTimer() {
   currTime.innerText =
     userSettings.pomTime < 10
       ? '0' + userSettings.pomTime + ':00'
       : userSettings.pomTime + ':00';
   userSettings.currSession = userSettings.pomTime;
+}
 
+function handlePom() {
+  setPomodoroTimer();
+  userSettings.countSession++;
   headerPom.classList.add(`active`);
   headerPom.classList.add(`${userSettings.color}-color`);
   headerPom.classList.remove(`inactive`);

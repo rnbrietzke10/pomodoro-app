@@ -9,6 +9,7 @@ const longTimeInput = document.querySelector('#long-break');
 document.querySelector('#settings-icon').addEventListener('click', function () {
   settingsModal.classList.remove('hidden');
   overlay.classList.remove('hidden');
+  pauseTimer();
 });
 
 // Event lisnter to close settings modal using the x at the top right corner
@@ -31,13 +32,14 @@ applySettingsBtn.addEventListener('click', function (e) {
   checkFontSelected();
   localStorage.setItem('settings', JSON.stringify(userSettings));
   applySettingStyles(userSettings);
-  console.log(userSettings);
   settingsModal.classList.add('hidden');
   overlay.classList.add('hidden');
+  setPomodoroTimer();
+  startStopBtn.innerText = 'START';
+  startStopBtn.classList.remove('restart');
 });
 
 function setHexColor(colorSelected) {
-  console.log(colorSelected.attributes.id.value);
   if (colorSelected.attributes.id.value === 'coral') {
     return hexCoral;
   } else if (colorSelected.attributes.id.value === 'cyan') {
@@ -91,9 +93,7 @@ function checkFontSelected() {
 
 // Event listener for font selection
 document.querySelector('.font').addEventListener('click', function (e) {
-  console.log(e.target.attributes.id.value);
   const currFont = checkFontSelected();
-  console.log(currFont);
   currFont.classList.remove('font-selected');
   document
     .querySelector(`#${e.target.attributes.id.value}`)
@@ -137,9 +137,7 @@ document
         default:
           break;
       }
-    } catch (err) {
-      //console.log(err);
-    }
+    } catch (err) {}
   });
 
 function applySettingStyles({ fontFamily, hexColor, color }) {
