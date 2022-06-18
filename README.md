@@ -19,7 +19,7 @@ This is a solution to the [Pomodoro app challenge on Frontend Mentor](https://ww
 
 ## Overview
 
-This is app is a Pomodoro timer that was built with HTML, CSS and JavaScript. It stores the users settings and what session they are currently on using local storage.
+This app is a Pomodoro timer that was built with HTML, CSS and JavaScript. It stores the users settings and what session they are currently on using local storage.
 
 ### The challenge
 
@@ -41,7 +41,7 @@ Users should be able to:
 
 ## My process
 
-I started with the layout of the timer, then began to work on the functionality of getting the timer running and having the progress circle move with the timer. The next thing I worked on was the settings modal layout. Once the modal was finished I started to plan out the functionality needed for the settings. After I knew what needed to be done I used JavaScript to create the functionality. Once the app was working I went back and separated the setting functionality into it's own file and made changes needed to the styling.
+I started with the layout of the timer, then began to work on the functionality of getting the timer running and having the progress circle move with the timer. The next thing I worked on was the settings modal layout. Once the modal was finished I started to plan out the functionality needed for the settings. After I knew what needed to be done I used JavaScript to create the functionality. Once the app was working I went back and separated the setting functionality into its own file and made changes needed to the styling.
 
 ### Built with
 
@@ -62,7 +62,7 @@ I plan to go back and try to see if there are any more places where I can create
 ### Useful resources
 
 - [Circular Progress Bar Using SVG | HTML | CSS | JS](https://youtu.be/f7XUZFexSgo) - This helped me to better understand how to make SVGs and manipulate them.
-- [How to Scale SVGs](https://youtu.be/Clv_YhMWoFk) - I was struggling on how to modify the progress circle SVG for mobile devices and when I was researching the topic I found this video. It helped me understand the diffrence between the SVG viewport and viewbox. I learned that the viewport is what you will be able to see and the rest of the SVG will not be seen. This is controlled by setting the height and the width if the viewbox is not specified in the SVG. The viewbox is used to specify where the viewbox will start and the height and width of the viewbox. If the viewbox is specified then you can use the height and width in CSS to scale your SVG
+- [How to Scale SVGs](https://youtu.be/Clv_YhMWoFk) - I was struggling on how to modify the progress circle SVG for mobile devices and when I was researching the topic I found this video. It helped me understand the difference between the SVG viewport and viewbox. I learned that the viewport is what you will be able to see and the rest of the SVG will not be seen. This is controlled by setting the height and the width if the viewbox is not specified in the SVG. The viewbox is used to specify where the viewbox will start and the height and width of the viewbox. If the viewbox is specified then you can use the height and width in CSS to scale your SVG
 
 **Note: Delete this note and replace the list above with resources that helped you during the challenge. These could come in handy for anyone viewing your solution or for yourself when you look back on this project in the future.**
 
